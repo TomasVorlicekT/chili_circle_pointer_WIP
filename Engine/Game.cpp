@@ -24,7 +24,8 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	pointerCircle( 40, 1)
 {
 }
 
@@ -38,8 +39,13 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	mousePosition.Update(wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
 }
 
 void Game::ComposeFrame()
 {
+	if (wnd.mouse.LeftIsPressed())
+	{
+		pointerCircle.DrawPointerCircle(gfx, mousePosition);
+	}
 }

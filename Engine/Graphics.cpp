@@ -18,6 +18,8 @@
 *	You should have received a copy of the GNU General Public License					  *
 *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
 ******************************************************************************************/
+
+#define _USE_MATH_DEFINES 
 #include "MainWindow.h"
 #include "Graphics.h"
 #include "DXErr.h"
@@ -25,6 +27,8 @@
 #include <assert.h>
 #include <string>
 #include <array>
+#include <cmath>
+
 
 // Ignore the intellisense error "cannot open source file" for .shh files.
 // They will be created during the build sequence before the preprocessor runs.
@@ -305,6 +309,21 @@ void Graphics::BeginFrame()
 {
 	// clear the sysbuffer
 	memset( pSysBuffer,0u,sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
+}
+
+void Graphics::DrawCircle(Vec centre, int radius, int thickness, Color c)
+{
+	for (int t = 0; t <= thickness; t++)
+	{
+		for (int i = 0; i <= 360; i++)
+		{
+			int x{ 0 };
+			x = centre.GetX() + (radius + t) * std::cos(static_cast<double>(i) * 180 / M_PI);
+			int y{ 0 };
+			y = centre.GetY() + (radius + t) * std::sin(static_cast<double>(i) * 180 / M_PI);
+			PutPixel(x, y, c);
+		}
+	}
 }
 
 void Graphics::PutPixel( int x,int y,Color c )

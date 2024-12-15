@@ -23,6 +23,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
+#include "PointerCircle.h"
 
 class Game
 {
@@ -40,6 +41,9 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
+	Mouse mouse;
+	PointerCircle pointerCircle;
+	Vec mousePosition;
 	/********************************/
 	/*  User Variables              */
 	/********************************/
