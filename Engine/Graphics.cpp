@@ -317,11 +317,11 @@ void Graphics::DrawCircle(Vec centre, int radius, int thickness, Color c)
 	{
 		for (int i = 0; i <= 360; i++)
 		{
-			int x{ 0 };
+			double x{ 0.0 };
 			x = centre.GetX() + (radius + t) * std::cos(static_cast<double>(i) * 180 / M_PI);
-			int y{ 0 };
+			double y{ 0.0 };
 			y = centre.GetY() + (radius + t) * std::sin(static_cast<double>(i) * 180 / M_PI);
-			PutPixel(x, y, c);
+			PutPixel(static_cast<int>(x), static_cast<int>(y), c);
 		}
 	}
 }

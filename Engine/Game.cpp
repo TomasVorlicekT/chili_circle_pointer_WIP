@@ -25,7 +25,7 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	pointerCircle( 40, 1)
+	pointerCircle( 40, 1, Vec(400, 300))
 {
 }
 
@@ -39,13 +39,50 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	float dt = ft.Mark();
+	timeElapsed += dt;
+
 	mousePosition.Update(wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+
+	multiplier = wnd.kbd.KeyIsPressed(VK_SHIFT) ? 5 : 1;
+
+	if (timeElapsed > 0.05)
+	{
+		if (wnd.kbd.KeyIsPressed(VK_UP))
+		{
+			thicknessPointer += 1 * multiplier;
+		}
+		else if (wnd.kbd.KeyIsPressed(VK_DOWN) && thicknessPointer > 0)
+		{
+			thicknessPointer -= 1 * multiplier;
+		}
+
+		if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+		{
+			radiusPointer += 1 * multiplier;
+		}
+		else if (wnd.kbd.KeyIsPressed(VK_LEFT) && radiusPointer > 0)
+		{
+			radiusPointer -= 1 * multiplier;
+		}
+		timeElapsed = 0.0f;
+	}
+
+	pointerCircle.UpdateTopology(radiusPointer, thicknessPointer, mousePosition);
+
+	if (wnd.mouse.LeftIsPressed())
+	{
+		circles.push_back(PointerCircle(radiusPointer, thicknessPointer, mousePosition));
+	}
+
 }
 
 void Game::ComposeFrame()
 {
-	if (wnd.mouse.LeftIsPressed())
+	pointerCircle.DrawPointerCircle(gfx);
+
+	for (PointerCircle circle : circles)
 	{
-		pointerCircle.DrawPointerCircle(gfx, mousePosition);
+		circle.DrawPointerCircle(gfx);
 	}
 }

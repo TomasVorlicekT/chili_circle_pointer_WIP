@@ -24,13 +24,16 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "PointerCircle.h"
+#include "FrameTimer.h"
+
+#include <vector>
 
 class Game
 {
 public:
-	Game( class MainWindow& wnd );
-	Game( const Game& ) = delete;
-	Game& operator=( const Game& ) = delete;
+	Game(class MainWindow& wnd);
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
 	void Go();
 private:
 	void ComposeFrame();
@@ -41,10 +44,12 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	Mouse mouse;
+	FrameTimer ft;
 	PointerCircle pointerCircle;
+	std::vector<PointerCircle> circles;
 	Vec mousePosition;
-	/********************************/
-	/*  User Variables              */
-	/********************************/
+	int thicknessPointer{ 1 };
+	int radiusPointer{ 40 };
+	int multiplier{ 1 };
+	float timeElapsed{ 0.0f };
 };
