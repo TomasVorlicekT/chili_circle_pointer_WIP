@@ -11,10 +11,10 @@ PointerCircle::PointerCircle(int radius_in, int thickness_in, Vec centre_in)
 
 void PointerCircle::DrawPointerCircle(Graphics& gfx)
 {
-	if (centre.GetX() - radius - thickness > 0 &&
-		centre.GetX() + radius + thickness < gfx.ScreenWidth &&
-		centre.GetY() - radius - thickness > 0 &&
-		centre.GetY() + radius + thickness < gfx.ScreenHeight
+	if (centre.x - radius - thickness > 0 &&
+		centre.x + radius + thickness < gfx.ScreenWidth &&
+		centre.y - radius - thickness > 0 &&
+		centre.y + radius + thickness < gfx.ScreenHeight
 		)
 	{
 		gfx.DrawCircle(centre, radius, thickness, c);

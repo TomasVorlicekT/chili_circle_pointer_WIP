@@ -311,19 +311,47 @@ void Graphics::BeginFrame()
 	memset( pSysBuffer,0u,sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
 }
 
+void Graphics::DrawLine(const Vec& start, const Vec& end, int thickness, Color c)
+{
+	// the thickness will be centered around the centre line defined by (end-start) vector
+	Vec direction = (end - start).Normalize();
+	float length = (end - start).GetLength();
+
+	// offset of the parallel lines has to be governed by some logic so that the rectangle with thickness
+	// has deterministic orientation of the offset -> this perpendicular vector should results in consistenent orientation of the offset
+	Vec directionPerpen{ -direction.y, direction.x };
+
+	for (int t = 1; t <= thickness; t++)
+	{
+		for (int j = 0; j <= length; j++)
+		{
+			PutPixel(
+				start.x + directionPerpen.x * t + direction.x * j,
+				start.y + directionPerpen.y * t + direction.y * j,
+				c
+			);
+		}
+	}
+}
+
 void Graphics::DrawCircle(Vec centre, int radius, int thickness, Color c)
 {
 	for (int t = 0; t <= thickness; t++)
 	{
-		for (int i = 0; i <= 360; i++)
+		for (float i = 0.0f; i <= 360.0f; i += 0.5f)
 		{
 			double x{ 0.0 };
-			x = centre.GetX() + (radius + t) * std::cos(static_cast<double>(i) * 180 / M_PI);
+			x = centre.x + (radius + t) * std::cos((i) * 180 / M_PI);
 			double y{ 0.0 };
-			y = centre.GetY() + (radius + t) * std::sin(static_cast<double>(i) * 180 / M_PI);
+			y = centre.y + (radius + t) * std::sin((i) * 180 / M_PI);
 			PutPixel(static_cast<int>(x), static_cast<int>(y), c);
 		}
 	}
+}
+
+void Graphics::DrawRect(const Vec& origin, int orientation, int width, int height, int thickness, Color c)
+{
+
 }
 
 void Graphics::PutPixel( int x,int y,Color c )

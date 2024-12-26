@@ -85,4 +85,10 @@ void Game::ComposeFrame()
 	{
 		circle.DrawPointerCircle(gfx);
 	}
+
+	gfx.DrawLine(Vec(50, 50), Vec(200, 200), 20, Colors::Blue);
+	gfx.DrawLine(Vec(210, 200), Vec(60, 50), 20, Colors::Blue);
+
+	gfx.DrawLine(Vec(40, 400), Vec(500, 400), 20, Colors::Blue);
+	gfx.DrawLine(Vec(500, 450), Vec(40, 450), 20, Colors::Blue);
 }
