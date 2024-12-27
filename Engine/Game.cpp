@@ -25,7 +25,8 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	pointerCircle( 40, 1, Vec(400, 300))
+	pointerCircle( 40, 1, Vec(400, 300)),
+	mousePosition(Vec(400,300))
 {
 }
 
@@ -42,7 +43,7 @@ void Game::UpdateModel()
 	float dt = ft.Mark();
 	timeElapsed += dt;
 
-	mousePosition.Update(wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+	mousePosition.Update(static_cast<float>(wnd.mouse.GetPosX()), static_cast<float>(wnd.mouse.GetPosY()));
 
 	multiplier = wnd.kbd.KeyIsPressed(VK_SHIFT) ? 5 : 1;
 
@@ -86,9 +87,17 @@ void Game::ComposeFrame()
 		circle.DrawPointerCircle(gfx);
 	}
 
-	gfx.DrawLine(Vec(50, 50), Vec(200, 200), 20, Colors::Blue);
-	gfx.DrawLine(Vec(210, 200), Vec(60, 50), 20, Colors::Blue);
-
-	gfx.DrawLine(Vec(40, 400), Vec(500, 400), 20, Colors::Blue);
-	gfx.DrawLine(Vec(500, 450), Vec(40, 450), 20, Colors::Blue);
+	gfx.DrawRect(Vec(400, 300), 0, 100, 50, 5, Colors::Cyan);
+	gfx.DrawRect(Vec(400, 300), 30, 100, 50, 5, Colors::Green);
+	gfx.DrawRect(Vec(400, 300), 60, 100, 50, 5, Colors::Red);
+	gfx.DrawRect(Vec(400, 300), 90, 100, 50, 5, Colors::Magenta);
+	gfx.DrawRect(Vec(400, 300), 120, 100, 50, 5, Colors::Cyan);
+	gfx.DrawRect(Vec(400, 300), 150, 100, 50, 5, Colors::Green);
+	gfx.DrawRect(Vec(400, 300), 180, 100, 50, 5, Colors::Red);
+	gfx.DrawRect(Vec(400, 300), 210, 100, 50, 5, Colors::Magenta);
+	gfx.DrawRect(Vec(400, 300), 240, 100, 50, 5, Colors::Green);
+	gfx.DrawRect(Vec(400, 300), 270, 100, 50, 5, Colors::Red);
+	gfx.DrawRect(Vec(400, 300), 300, 100, 50, 5, Colors::Magenta);
+	gfx.DrawRect(Vec(400, 300), 330, 100, 50, 5, Colors::Magenta);
+	gfx.DrawRect(Vec(400, 300), 360, 100, 50, 5, Colors::Magenta);
 }

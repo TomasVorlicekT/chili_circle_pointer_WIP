@@ -326,12 +326,33 @@ void Graphics::DrawLine(const Vec& start, const Vec& end, int thickness, Color c
 		for (int j = 0; j <= length; j++)
 		{
 			PutPixel(
-				start.x + directionPerpen.x * t + direction.x * j,
-				start.y + directionPerpen.y * t + direction.y * j,
+				static_cast<int>(start.x + directionPerpen.x * t + direction.x * j),
+				static_cast<int>(start.y + directionPerpen.y * t + direction.y * j),
 				c
 			);
 		}
 	}
+}
+
+void Graphics::DrawRect(const Vec& origin, float orientation, int width, int height, int thickness, Color c)
+{
+	// rectangle will be composed by four individual lines, with a thickness
+	// we will need to get the start/end points for each line inside this function
+
+	Vec vecA = origin;
+
+	Vec vecB(vecA.x + width * std::cos((orientation) * M_PI / 180), vecA.y - width * std::sin((orientation) * M_PI / 180));
+
+	Vec vecC(vecB.x - height * std::sin((orientation) * M_PI / 180), vecB.y - height * std::cos((orientation) * M_PI / 180));
+
+	Vec vecD(vecC.x - width * std::cos((orientation) * M_PI / 180), vecC.y + width * std::sin((orientation) * M_PI / 180));
+
+	DrawLine(vecA, vecB, thickness, c);
+	DrawLine(vecB, vecC, thickness, c);
+	DrawLine(vecC, vecD, thickness, c);
+	DrawLine(vecD, vecA, thickness, c);
+
+
 }
 
 void Graphics::DrawCircle(Vec centre, int radius, int thickness, Color c)
@@ -341,18 +362,14 @@ void Graphics::DrawCircle(Vec centre, int radius, int thickness, Color c)
 		for (float i = 0.0f; i <= 360.0f; i += 0.5f)
 		{
 			double x{ 0.0 };
-			x = centre.x + (radius + t) * std::cos((i) * 180 / M_PI);
+			x = centre.x + (radius + t) * std::cos((i) * M_PI / 180);
 			double y{ 0.0 };
-			y = centre.y + (radius + t) * std::sin((i) * 180 / M_PI);
+			y = centre.y + (radius + t) * std::sin((i) * M_PI / 180);
 			PutPixel(static_cast<int>(x), static_cast<int>(y), c);
 		}
 	}
 }
 
-void Graphics::DrawRect(const Vec& origin, int orientation, int width, int height, int thickness, Color c)
-{
-
-}
 
 void Graphics::PutPixel( int x,int y,Color c )
 {

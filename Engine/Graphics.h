@@ -59,7 +59,7 @@ public:
 	}
 	void DrawLine(const Vec& start, const Vec& end, int thickness, Color c);
 	void DrawCircle(Vec centre, int radius, int thickness, Color c);
-	void DrawRect(const Vec& origin, int orientation, int width, int height, int thickness, Color c);
+	void DrawRect(const Vec& origin, float orientation, int width, int height, int thickness, Color c);
 	void PutPixel( int x,int y,Color c );
 	~Graphics();
 private:
