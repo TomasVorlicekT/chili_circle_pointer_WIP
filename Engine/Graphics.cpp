@@ -311,14 +311,15 @@ void Graphics::BeginFrame()
 	memset( pSysBuffer,0u,sizeof( Color ) * Graphics::ScreenHeight * Graphics::ScreenWidth );
 }
 
-void Graphics::DrawLine(const Vec& start, const Vec& end, int thickness, Color c)
+void Graphics::DrawLine(const Vec& start, const Vec& end, int thickness, Color c, bool drawOverlap)
 {
-	// the thickness will be centered around the centre line defined by (end-start) vector
+	int thicknessOverlap = drawOverlap ? thickness : 0;
+	// the thickness will be oriented to the outside of the vector direction
 	Vec direction = (end - start).Normalize();
-	float length = (end - start).GetLength();
+	float length = (end - start).GetLength() + 2 * thicknessOverlap;
 
 	// offset of the parallel lines has to be governed by some logic so that the rectangle with thickness
-	// has deterministic orientation of the offset -> this perpendicular vector should results in consistenent orientation of the offset
+	// has deterministic orientation of the offset -> this perpendicular vector should result in consistent orientation of the offset
 	Vec directionPerpen{ -direction.y, direction.x };
 
 	for (int t = 1; t <= thickness; t++)
@@ -326,8 +327,8 @@ void Graphics::DrawLine(const Vec& start, const Vec& end, int thickness, Color c
 		for (int j = 0; j <= length; j++)
 		{
 			PutPixel(
-				static_cast<int>(start.x + directionPerpen.x * t + direction.x * j),
-				static_cast<int>(start.y + directionPerpen.y * t + direction.y * j),
+				static_cast<int>( (start.x - direction.x * thicknessOverlap) + directionPerpen.x * t + direction.x * j),
+				static_cast<int>( (start.y - direction.y * thicknessOverlap) + directionPerpen.y * t + direction.y * j),
 				c
 			);
 		}
@@ -341,18 +342,17 @@ void Graphics::DrawRect(const Vec& origin, float orientation, int width, int hei
 
 	Vec vecA = origin;
 
-	Vec vecB(vecA.x + width * std::cos((orientation) * M_PI / 180), vecA.y - width * std::sin((orientation) * M_PI / 180));
 
-	Vec vecC(vecB.x - height * std::sin((orientation) * M_PI / 180), vecB.y - height * std::cos((orientation) * M_PI / 180));
+	Vec vecB(float(vecA.x + width * std::cos((orientation)*M_PI / 180)), float(vecA.y - width * std::sin((orientation)*M_PI / 180)));
 
-	Vec vecD(vecC.x - width * std::cos((orientation) * M_PI / 180), vecC.y + width * std::sin((orientation) * M_PI / 180));
+	Vec vecC(float(vecB.x - height * std::sin((orientation) * M_PI / 180)), float(vecB.y - height * std::cos((orientation)*M_PI / 180)));
 
-	DrawLine(vecA, vecB, thickness, c);
-	DrawLine(vecB, vecC, thickness, c);
-	DrawLine(vecC, vecD, thickness, c);
-	DrawLine(vecD, vecA, thickness, c);
+	Vec vecD(float(vecC.x - width * std::cos((orientation) * M_PI / 180)), float(vecC.y + width * std::sin((orientation) * M_PI / 180)));
 
-
+	DrawLine(vecA, vecB, thickness, c, true);
+	DrawLine(vecB, vecC, thickness, c, true);
+	DrawLine(vecC, vecD, thickness, c, true);
+	DrawLine(vecD, vecA, thickness, c, true);
 }
 
 void Graphics::DrawCircle(Vec centre, int radius, int thickness, Color c)
