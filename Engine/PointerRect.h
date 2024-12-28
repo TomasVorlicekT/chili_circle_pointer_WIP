@@ -9,7 +9,8 @@ class PointerRect
 {
 public:
 	PointerRect() = default;
-	PointerRect(int width_in, int height_in, const Vec& pos_in);
+	PointerRect(int width_in, int height_in, int thickness_in, const Vec& pos_in);
+	PointerRect(int width_in, int height_in, int thickness_in, int orientationAngle_in, const Vec& pos_in);
 	void DrawPointerRect(Graphics& gfx);
 	void UpdateTopology(int width_in, int height_in, int thickness_in, const Vec& pos_in);
 	void UpdateOrientation(int orientation_in);

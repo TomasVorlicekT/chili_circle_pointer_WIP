@@ -24,6 +24,7 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "PointerCircle.h"
+#include "PointerRect.h"
 #include "FrameTimer.h"
 
 #include <vector>
@@ -40,16 +41,23 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void HandleInputLogic(float timeElapsed);
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	FrameTimer ft;
 	PointerCircle pointerCircle;
+	PointerRect pointerRectangle;
 	std::vector<PointerCircle> circles;
+	std::vector<PointerRect> rectangles;
 	Vec mousePosition;
-	int thicknessPointer{ 1 };
+	int thicknessPointer{ 1 }; // shared for all objects
 	int radiusPointer{ 40 };
-	int multiplier{ 1 };
+	int widthPointer{ 40 };
+	int heightPointer{ 20 };
+	int orientationAngle{0};
+	int multiplierInput{ 1 };
+	char currentObject{ 'C'}; // C = circle, R = rectangle
 	float timeElapsed{ 0.0f };
 };

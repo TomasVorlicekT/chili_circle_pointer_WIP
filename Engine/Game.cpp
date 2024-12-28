@@ -26,6 +26,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	pointerCircle( 40, 1, Vec(400, 300)),
+	pointerRectangle(50, 30, 1, Vec(400, 300)),
 	mousePosition(Vec(400,300))
 {
 }
@@ -38,6 +39,70 @@ void Game::Go()
 	gfx.EndFrame();
 }
 
+void Game::HandleInputLogic(float timeElapsed)
+{
+	if (wnd.kbd.KeyIsPressed('C'))
+	{
+		currentObject = 'C';
+	}
+	else if (wnd.kbd.KeyIsPressed('R'))
+	{
+		currentObject = 'R';
+	}
+
+	if (timeElapsed > 0.05)
+	{
+		if (wnd.kbd.KeyIsPressed(VK_UP))
+		{
+			thicknessPointer += 1 * multiplierInput;
+		}
+		else if (wnd.kbd.KeyIsPressed(VK_DOWN) && thicknessPointer > 1)
+		{
+			thicknessPointer -= 1 * multiplierInput;
+		}
+
+		// input for circle attributes
+		if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+		{
+			radiusPointer += 1 * multiplierInput;
+		}
+		else if (wnd.kbd.KeyIsPressed(VK_LEFT) && radiusPointer > 1)
+		{
+			radiusPointer -= 1 * multiplierInput;
+		}
+		//input for rectangle attributes
+		if (wnd.kbd.KeyIsPressed('W'))
+		{
+			heightPointer += 1 * multiplierInput;
+		}
+		else if (wnd.kbd.KeyIsPressed('S') && heightPointer > 1)
+		{
+			heightPointer -= 1 * multiplierInput;
+		}
+
+		if (wnd.kbd.KeyIsPressed('D'))
+		{
+			widthPointer += 1 * multiplierInput;
+		}
+		else if (wnd.kbd.KeyIsPressed('A') && widthPointer > 1)
+		{
+			widthPointer -= 1 * multiplierInput;
+		}
+
+		// Rotation of rectangle
+		if (wnd.kbd.KeyIsPressed('Q'))
+		{
+			orientationAngle = (orientationAngle < 360) ? orientationAngle + 1 : 0;
+		}
+		else if (wnd.kbd.KeyIsPressed('E'))
+		{
+			orientationAngle = (orientationAngle >= 0) ? orientationAngle - 1 : 359;
+		}
+
+		timeElapsed = 0.0f;
+	}
+}
+
 void Game::UpdateModel()
 {
 	float dt = ft.Mark();
@@ -45,59 +110,70 @@ void Game::UpdateModel()
 
 	mousePosition.Update(static_cast<float>(wnd.mouse.GetPosX()), static_cast<float>(wnd.mouse.GetPosY()));
 
-	multiplier = wnd.kbd.KeyIsPressed(VK_SHIFT) ? 5 : 1;
+	multiplierInput = wnd.kbd.KeyIsPressed(VK_SHIFT) ? 5 : 1;
 
-	if (timeElapsed > 0.05)
+	HandleInputLogic(timeElapsed);
+
+	switch (currentObject)
 	{
-		if (wnd.kbd.KeyIsPressed(VK_UP))
-		{
-			thicknessPointer += 1 * multiplier;
-		}
-		else if (wnd.kbd.KeyIsPressed(VK_DOWN) && thicknessPointer > 0)
-		{
-			thicknessPointer -= 1 * multiplier;
-		}
-
-		if (wnd.kbd.KeyIsPressed(VK_RIGHT))
-		{
-			radiusPointer += 1 * multiplier;
-		}
-		else if (wnd.kbd.KeyIsPressed(VK_LEFT) && radiusPointer > 0)
-		{
-			radiusPointer -= 1 * multiplier;
-		}
-		timeElapsed = 0.0f;
+	case 'C':
+		pointerCircle.UpdateTopology(radiusPointer, thicknessPointer, mousePosition);
+		break;
+	case 'R':
+		pointerRectangle.UpdateTopology(widthPointer, heightPointer, thicknessPointer, mousePosition);
+		pointerRectangle.UpdateOrientation(orientationAngle);
+		break;
 	}
-
-	pointerCircle.UpdateTopology(radiusPointer, thicknessPointer, mousePosition);
 
 	if (wnd.mouse.LeftIsPressed())
 	{
-		circles.push_back(PointerCircle(radiusPointer, thicknessPointer, mousePosition));
+		switch (currentObject)
+		{
+		case 'C':
+			circles.push_back(PointerCircle(radiusPointer, thicknessPointer, mousePosition));
+			break;
+		case 'R':
+			rectangles.push_back(PointerRect(widthPointer, heightPointer, thicknessPointer, orientationAngle, mousePosition));
+			break;
+		}
 	}
 
 }
 
+
 void Game::ComposeFrame()
 {
-	pointerCircle.DrawPointerCircle(gfx);
+	switch (currentObject)
+	{
+	case 'C':
+		pointerCircle.DrawPointerCircle(gfx);
+		break;
+	case 'R':
+		pointerRectangle.DrawPointerRect(gfx);
+		break;
+	}
 
 	for (PointerCircle circle : circles)
 	{
 		circle.DrawPointerCircle(gfx);
 	}
 
-	gfx.DrawRect(Vec(400, 300), 0, 100, 50, 5, Colors::Cyan);
-	gfx.DrawRect(Vec(400, 300), 30, 100, 50, 5, Colors::Green);
-	gfx.DrawRect(Vec(400, 300), 60, 100, 50, 5, Colors::Red);
-	gfx.DrawRect(Vec(400, 300), 90, 100, 50, 5, Colors::Magenta);
-	gfx.DrawRect(Vec(400, 300), 120, 100, 50, 5, Colors::Cyan);
-	gfx.DrawRect(Vec(400, 300), 150, 100, 50, 5, Colors::Green);
-	gfx.DrawRect(Vec(400, 300), 180, 100, 50, 5, Colors::Red);
-	gfx.DrawRect(Vec(400, 300), 210, 100, 50, 5, Colors::Magenta);
-	gfx.DrawRect(Vec(400, 300), 240, 100, 50, 5, Colors::Green);
-	gfx.DrawRect(Vec(400, 300), 270, 100, 50, 5, Colors::Red);
-	gfx.DrawRect(Vec(400, 300), 300, 100, 50, 5, Colors::Magenta);
-	gfx.DrawRect(Vec(400, 300), 330, 100, 50, 5, Colors::Magenta);
-	gfx.DrawRect(Vec(400, 300), 360, 100, 50, 5, Colors::Magenta);
+	for (PointerRect rectangle : rectangles)
+	{
+		rectangle.DrawPointerRect(gfx);
+	}
+
+	//gfx.DrawRect(Vec(400, 300), 0, 100, 50, 5, Colors::Cyan);
+	//gfx.DrawRect(Vec(400, 300), 30, 100, 50, 5, Colors::Green);
+	//gfx.DrawRect(Vec(400, 300), 60, 100, 50, 5, Colors::Red);
+	//gfx.DrawRect(Vec(400, 300), 90, 100, 50, 5, Colors::Magenta);
+	//gfx.DrawRect(Vec(400, 300), 120, 100, 50, 5, Colors::Cyan);
+	//gfx.DrawRect(Vec(400, 300), 150, 100, 50, 5, Colors::Green);
+	//gfx.DrawRect(Vec(400, 300), 180, 100, 50, 5, Colors::Red);
+	//gfx.DrawRect(Vec(400, 300), 210, 100, 50, 5, Colors::Magenta);
+	//gfx.DrawRect(Vec(400, 300), 240, 100, 50, 5, Colors::Green);
+	//gfx.DrawRect(Vec(400, 300), 270, 100, 50, 5, Colors::Red);
+	//gfx.DrawRect(Vec(400, 300), 300, 100, 50, 5, Colors::Magenta);
+	//gfx.DrawRect(Vec(400, 300), 330, 100, 50, 5, Colors::Magenta);
+	//gfx.DrawRect(Vec(400, 300), 360, 100, 50, 5, Colors::Magenta);
 }
