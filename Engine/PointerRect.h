@@ -14,6 +14,7 @@ public:
 	void DrawPointerRect(Graphics& gfx);
 	void UpdateTopology(int width_in, int height_in, int thickness_in, const Vec& pos_in);
 	void UpdateOrientation(int orientation_in);
+	bool IsWithinBoundaries() const;
 
 private:
 	Vec pos;

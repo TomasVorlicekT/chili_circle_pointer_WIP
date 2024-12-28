@@ -349,6 +349,7 @@ void Graphics::DrawRect(const Vec& origin, float orientation, int width, int hei
 
 	Vec vecD(float(vecC.x - width * std::cos((orientation) * M_PI / 180)), float(vecC.y + width * std::sin((orientation) * M_PI / 180)));
 
+
 	DrawLine(vecA, vecB, thickness, c, true);
 	DrawLine(vecB, vecC, thickness, c, true);
 	DrawLine(vecC, vecD, thickness, c, true);
